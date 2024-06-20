@@ -1,0 +1,370 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 40px;
+}
+
+
+.header {
+    width: 800px;
+    border-radius: 40px;
+}
+
+
+.headertext {
+    width: 800px;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+}
+
+:root {
+    --color-background: #ffffff;
+    --stroke-width: calc(1em / 16);
+    --font-size: 30vmin;
+    --font-weight: 700;
+    --letter-spacing: calc(1em / 22);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+
+h1 {
+    background-clip: text;
+    font-family: "Lucida Console", "Courier New", monospace;
+    background-image: linear-gradient(210deg, rgba(230, 8, 105, 1) 1%, rgba(238, 174, 202, 1) 30%, rgba(166, 184, 227, 1) 86%, rgba(39, 132, 241, 1) 100%);
+    color: var(--color-background);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    letter-spacing: var(--letter-spacing);
+    padding: calc(--stroke-width / 2);
+    -webkit-text-stroke-color: transparent;
+    -webkit-text-stroke-width: var(--stroke-width);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    min-width: 760px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    font-size: calc(100% + 0.5vw);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition-duration: 0.001s !important;
+    }
+}
+
+.navbar {
+    background: linear-gradient(100deg, rgb(120, 188, 255), rgb(191, 122, 255));
+    padding: 2em;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 460 55'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23fff' stroke-width='7' opacity='.1'%3E%3Cpath d='M-345 34.5s57.5-13.8 115-13.8 115 13.8 115 13.8S-57.5 48.3 0 48.3s115-13.8 115-13.8 57.5-13.8 115-13.8 115 13.8 115 13.8 57.5 13.8 115 13.8 115-13.8 115-13.8'/%3E%3Cpath d='M-345 20.7s57.5-13.8 115-13.8 115 13.8 115 13.8S-57.5 34.5 0 34.5s115-13.8 115-13.8S172.5 6.9 230 6.9s115 13.8 115 13.8 57.5 13.8 115 13.8 115-13.8 115-13.8m-920 27.6s57.5-13.8 115-13.8 115 13.8 115 13.8S-57.5 62.1 0 62.1s115-13.8 115-13.8 57.5-13.8 115-13.8 115 13.8 115 13.8 57.5 13.8 115 13.8 115-13.8 115-13.8'/%3E%3Cpath d='M-345 6.9s57.5-13.8 115-13.8S-115 6.9-115 6.9-57.5 20.7 0 20.7 115 6.9 115 6.9 172.5-6.9 230-6.9 345 6.9 345 6.9s57.5 13.8 115 13.8S575 6.9 575 6.9'/%3E%3Cpath d='M-345-6.9s57.5-13.8 115-13.8S-115-6.9-115-6.9-57.5 6.9 0 6.9 115-6.9 115-6.9s57.5-13.8 115-13.8S345-6.9 345-6.9 402.5 6.9 460 6.9 575-6.9 575-6.9m-920 69s57.5-13.8 115-13.8 115 13.8 115 13.8S-57.5 75.9 0 75.9s115-13.8 115-13.8 57.5-13.8 115-13.8 115 13.8 115 13.8 57.5 13.8 115 13.8 115-13.8 115-13.8'/%3E%3C/g%3E%3C/svg%3E%0A"),
+        linear-gradient(80deg, rgb(224, 165, 222), rgb(107, 148, 253));
+    background-position: 50% 50%;
+    animation: background-move 10s linear infinite;
+    background-size: 100vw auto, 100% 100%;
+    background-size: unquote('max(100vw, 30em)') auto, 100% 100%;
+    border-radius: 20px;
+}
+
+@keyframes background-move {
+    0% {
+        background-position: 0 0, 0 0;
+    }
+
+    100% {
+        background-position: 100vw 0, 0 0;
+        background-position: unquote('max(100vw, 40em)') 0, 0 0;
+    }
+}
+
+.city-input {
+    box-shadow: inset #ffbce5 0 0 0 2px;
+    border: 0;
+    background: rgba(0, 0, 0, 0);
+    appearance: none;
+    width: 100%;
+    position: relative;
+    border-radius: 3px;
+    padding: 9px 12px;
+    line-height: 1.4;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 400;
+    height: 40px;
+    transition: all .2s ease;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.city-input:hover {
+    box-shadow: 0 0 0 0 #fff inset, #1dbde9 0 0 0 2px;
+}
+
+.city-input:focus {
+    background: #ffd3ef;
+    color: rgb(118, 175, 255);
+    outline: 0;
+    box-shadow: 0 0 0 0 #fff inset, #f28bff 0 0 0 3px;
+}
+
+.city-button {
+    background-image: linear-gradient(to right, #B993D6 0%, #8CA6DB 51%, #B993D6 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: large;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    display: block;
+    border: none;
+}
+
+.city-button:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.logout-button {
+    background-image: linear-gradient(to right, #B993D6 0%, #8CA6DB 51%, #B993D6 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: large;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    display: block;
+    border: none;
+}
+
+.logout-button:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.middlepage {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 800px;
+}
+
+.sunrise {
+    width: 200px;
+    min-height: 800px;
+    background: linear-gradient(180deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 40px;
+}
+
+
+.sunrise-button {
+    background-image: linear-gradient(to right, #B993D6 0%, #8CA6DB 51%, #B993D6 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: large;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    margin: 20px auto 10px;
+    display: block;
+    border: none;
+}
+
+.sunrise-button:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.sunrise-input {
+    box-shadow: inset #ffbce5 0 0 0 2px;
+    border: 0;
+    background: rgba(0, 0, 0, 0);
+    appearance: none;
+    position: relative;
+    border-radius: 3px;
+    padding: 9px 12px;
+    line-height: 1.4;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 400;
+    height: 40px;
+    transition: all .2s ease;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.sunrise-input:hover {
+    box-shadow: 0 0 0 0 #fff inset, #1dbde9 0 0 0 2px;
+}
+
+.sunrise-input:focus {
+    background: #ffd3ef;
+    color: rgb(118, 175, 255);
+    outline: 0;
+    box-shadow: 0 0 0 0 #fff inset, #f28bff 0 0 0 3px;
+}
+
+
+.city {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 300px;
+    min-height: 800px;
+    background: linear-gradient(0deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 40px;
+}
+
+h4 {
+    color: #ffffff
+}
+
+h3 {}
+
+.citydata-container,
+.sunsetdata-container,
+.sunrisedata-container {
+    font-family: "Lucida Console", "Courier New", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    height: 80%;
+    margin-top: 20px;
+    
+    background: rgba(238, 174, 202, 0.4);
+    border: solid lightpink;
+    border-width: 1px;
+    border-radius: 30px;
+    text-align: center;
+}
+
+
+
+
+.sunset {
+
+    width: 200px;
+    min-height: 800px;
+    background: linear-gradient(180deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 40px;
+}
+
+
+
+.sunset-button {
+    background-image: linear-gradient(to right, #B993D6 0%, #8CA6DB 51%, #B993D6 100%);
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: large;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-radius: 10px;
+    margin: 20px auto 10px;
+    display: block;
+    border: none;
+}
+
+.sunset-button:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.sunset-input {
+    box-shadow: inset #ffbce5 0 0 0 2px;
+    border: 0;
+    background: rgba(0, 0, 0, 0);
+    appearance: none;
+
+    position: relative;
+    border-radius: 3px;
+    padding: 9px 12px;
+    line-height: 1.4;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 400;
+    height: 40px;
+    transition: all .2s ease;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+.sunset-input:hover {
+    box-shadow: 0 0 0 0 #fff inset, #1dbde9 0 0 0 2px;
+}
+
+.sunset-input:focus {
+    background: #ffd3ef;
+    color: rgb(118, 175, 255);
+    outline: 0;
+    box-shadow: 0 0 0 0 #fff inset, #f28bff 0 0 0 3px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

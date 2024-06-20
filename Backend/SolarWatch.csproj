@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFramework>net7.0</TargetFramework>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+      <UserSecretsId>5436b2c4-ed91-430a-b867-0497c431f02b</UserSecretsId>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AngleSharp" Version="1.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.18" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.18" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.18" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.18" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.18" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="Microsoft.VisualStudio.TestPlatform" Version="14.0.0" />
+        <PackageReference Include="Moq" Version="4.20.69" />
+        <PackageReference Include="MSTest" Version="3.2.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+         <InternalsVisibleTo Include="SolarWatchIntegrationTest" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
