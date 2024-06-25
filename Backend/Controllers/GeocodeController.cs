@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SolarWatch.Data;
 using SolarWatch.Model;
+using SolarWatch.Model.DTOModel;
 using SolarWatch.Services;
 using SolarWatch.Services.Repository;
 using SolarWatch.Services.SolarWatchService;
@@ -27,18 +28,18 @@ public class GeocodeController : ControllerBase
         _cityRepository = cityRepository;
     }
 
-    [HttpGet("{cityName}"), Authorize(Roles = "User, Admin")]
-    public async Task<ActionResult<City>> GetCityGeocodeByName(string cityName)
+    [HttpGet, Authorize(Roles = "User, Admin")]
+    public async Task<ActionResult<City>> GetCityGeocodeByName([FromBody]GeocodeDTO cityInput)
     {
         try
         {
-            var city = await _cityRepository.GetByName(cityName);
+            var city = await _cityRepository.GetByName(cityInput.cityName);
             if (city != null)
             {
                 return Ok(city);
             }
 
-            city = await _geocodingCity.GetCityLongAndLatByName(cityName);
+            city = await _geocodingCity.GetCityLongAndLatByName(cityInput);
 
             if (city == null)
             {

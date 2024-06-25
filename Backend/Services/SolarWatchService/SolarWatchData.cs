@@ -1,8 +1,10 @@
 using System.Globalization;
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SolarWatch.Model;
+using SolarWatch.Model.DTOModel;
 
 namespace SolarWatch.Services.SolarWatchService;
 
@@ -10,50 +12,45 @@ public class SolarWatchData : ISolarWatchData
 {
     private readonly ILogger<SolarWatchData> _logger;
 
-    public SolarWatchData(ILogger<SolarWatchData> logger)
+    private readonly ISolarJsonConverter _jsonConverter;
+
+    public SolarWatchData(ILogger<SolarWatchData> logger, ISolarJsonConverter jsonConverter)
     {
         _logger = logger;
+        _jsonConverter = jsonConverter;
     }
 
-    public async Task<Sunrise> GetSunrise(City city, DateTime dateTime)
+    public async Task<Sunrise> GetSunrise(City city, SolarDTO solarInput)
     {
-        // Solar data
-        var solarData = await DownloadCityData(city, dateTime);
+        // GET SOLAR DATA
+        var solarData = await DownloadCityData(solarInput);
 
         if (string.IsNullOrEmpty(solarData))
         {
             throw new Exception("Solar data is empty or null.");
         }
 
-        JsonDocument solarJson = JsonDocument.Parse(solarData);
+        var sunrise = _jsonConverter.ParseSunriseData(solarData);
 
-        JsonElement results = solarJson.RootElement.GetProperty("results");
-
-        string sunriseTimeString = results.GetProperty("sunrise").GetString();
-
-        
-        if (!DateTime.TryParseExact(sunriseTimeString, "h:mm:ss tt", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTime sunriseTime))
+        if (sunrise == null)
         {
-            throw new Exception("Failed to parse sunrise time from the JSON data.");
+            _logger.LogError(
+                $"No city data found for the given name. Possibly wrong city name or empty response.");
         }
-
-        var sunrise = new Sunrise
+        else
         {
-            City = city,
-            SunriseTime = sunriseTime
-        };
-        
+            sunrise.City = city;
+        }
 
         return sunrise;
     }
 
-    public async Task<Sunset> GetSunset(City city, DateTime dateTime)
+    public async Task<Sunset> GetSunset(City city, SolarDTO solarInput)
     {
         try
         {
             // Solar data
-            var solarData = await DownloadCityData(city, dateTime);
+            var solarData = await DownloadCityData(solarInput);
 
             if (string.IsNullOrEmpty(solarData))
             {
@@ -61,41 +58,38 @@ public class SolarWatchData : ISolarWatchData
                 return null;
             }
 
-            JsonDocument solarJson = JsonDocument.Parse(solarData);
+            var sunset = _jsonConverter.ParseSunsetData(solarData);
 
-            // Assuming the structure is known and reliable, directly access properties
-            var results = solarJson.RootElement.GetProperty("results");
-            var sunsetTimeString = results.GetProperty("sunset").GetString();
-
-            // Parse sunset time
-            if (!DateTime.TryParseExact(sunsetTimeString, "h:mm:ss tt", CultureInfo.InvariantCulture,
-                    DateTimeStyles.None, out DateTime sunsetTime))
+            if (sunset == null)
             {
-                _logger.LogError("Failed to parse sunset time from the JSON data. Ensure sunset time is in the correct format (h:mm:ss tt).");
-                return null;
+                _logger.LogError(
+                    $"No city data found for the given name. Possibly wrong city name or empty response.");
             }
-
-            var sunset = new Sunset
+            else
             {
-                City = city,
-                SunsetTime = sunsetTime
-            };
-            
+                sunset.City = city;
+            }
 
             return sunset;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting sunset data for city '{CityName}' at date '{DateTime}'.", city.Name, dateTime);
+            _logger.LogError(ex, "An error occurred while getting sunset data for city.");
             return null;
         }
     }
 
-    private async Task<string> DownloadCityData(City city, DateTime dateTime)
+    private async Task<string> DownloadCityData(SolarDTO solarInput)
     {
         try
         {
-            var url = CreateSolarUrlForCity(city, dateTime);
+            var url = CreateSolarUrlForCity(solarInput);
+            if (url == null)
+            {
+                _logger.LogError("Cannot find city to create url with!");
+                throw new InvalidOperationException("City not found to create URL.");
+            }
+
             _logger.LogInformation($"Solar url: {url}");
 
             using var client = new HttpClient();
@@ -103,34 +97,32 @@ public class SolarWatchData : ISolarWatchData
 
             var response = await client.GetAsync(url);
 
-            response.EnsureSuccessStatusCode(); // Ensure the HTTP response is successful
-
             return await response.Content.ReadAsStringAsync();
         }
         catch (HttpRequestException e)
         {
             _logger.LogError(e, "An HTTP error occurred while calling the SolarWatch API.");
-            return null; // or throw an exception if you prefer
+            return null;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An error occurred while downloading data for city '{CityName}' at date '{DateTime}'.", city.Name, dateTime);
-            throw; // rethrow the exception to propagate it to the caller
+            _logger.LogError(e, "An error occurred while downloading data for city.");
+            throw;
         }
     }
 
-    private string CreateSolarUrlForCity(City city, DateTime dateTime)
+    private string CreateSolarUrlForCity(SolarDTO solarInput)
     {
-        if (city == null)
+        if (solarInput == null)
         {
             _logger.LogError("Cannot find city to create url with!");
             return null;
         }
 
-        string formattedDate = dateTime.ToString("yyyy-MM-dd");
+        string formattedDate = solarInput.dateTime.ToString("yyyy-MM-dd");
 
         string url =
-            $"https://api.sunrise-sunset.org/json?lat={city.Latitude.ToString()}&lng={city.Longitude.ToString()}&date={formattedDate}";
+            $"https://api.sunrise-sunset.org/json?lat={solarInput.latitude.ToString()}&lng={solarInput.longitude.ToString()}&date={formattedDate}";
 
         return url;
     }

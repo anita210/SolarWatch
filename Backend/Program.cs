@@ -61,6 +61,8 @@ void AddServices()
         options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSingleton<IGeocodingCity, GeocodingCity>();
+    builder.Services.AddScoped<IGeocodingJsonConverter, GeocodingJsonConverter>();
+    builder.Services.AddScoped<ISolarJsonConverter, SolarJsonConverter>();
     builder.Services.AddSingleton<ISolarWatchData, SolarWatchData>();
     builder.Services.AddScoped<ISolarRepository, SolarRepository>();
     builder.Services.AddScoped<ICityRepository, CityRepository>();

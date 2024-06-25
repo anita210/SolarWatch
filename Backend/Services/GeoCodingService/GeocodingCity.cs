@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using SolarWatch.Controllers;
 using SolarWatch.Model;
+using SolarWatch.Model.DTOModel;
 
 namespace SolarWatch.Services;
 
@@ -9,66 +10,56 @@ public class GeocodingCity : IGeocodingCity
 {
     private readonly ILogger<GeocodingCity> _logger;
 
-    public GeocodingCity(ILogger<GeocodingCity> logger)
+    private readonly IGeocodingJsonConverter _geocodingJsonConverter;
+
+    public GeocodingCity(ILogger<GeocodingCity> logger, IGeocodingJsonConverter geocodingJsonConverter)
     {
         _logger = logger;
+        _geocodingJsonConverter = geocodingJsonConverter;
     }
 
-    public async Task<City> GetCityLongAndLatByName(string cityName)
+    public async Task<City> GetCityLongAndLatByName(GeocodeDTO cityInput)
     {
         try
         {
-            var data = await GetGeocodeDataString(cityName);
+            var data = await GetGeocodeDataString(cityInput);
 
             if (string.IsNullOrEmpty(data))
             {
-                _logger.LogError("Failed to retrieve geocode data for city '{CityName}'.", cityName);
+                _logger.LogError("Failed to retrieve geocode data for city '{CityName}'.", cityInput.cityName);
                 return null;
             }
 
             var json = JsonDocument.Parse(data);
+            
+            var city = _geocodingJsonConverter.ParseCityData(data);
 
-            if (json.RootElement.ValueKind != JsonValueKind.Array || json.RootElement.GetArrayLength() == 0)
+            if (city == null)
             {
                 _logger.LogError(
-                    $"No city data found for the given name '{cityName}'. Possibly wrong city name or empty response.",
-                    cityName);
-                return null;
+                    $"No city data found for the given name. Possibly wrong city name or empty response.");
             }
 
-            var cityData = json.RootElement[0];
-            var name = cityData.GetProperty("name").GetString();
-            var lat = cityData.GetProperty("lat").GetDouble();
-            var lon = cityData.GetProperty("lon").GetDouble();
-            string? country = null;
-            string? state = null;
-            if (cityData.TryGetProperty("country", out var countryProperty) && countryProperty.ValueKind == JsonValueKind.String)
-            {
-                country = countryProperty.GetString();
-            }
-            
-            if (cityData.TryGetProperty("state", out var stateProperty) && stateProperty.ValueKind == JsonValueKind.String)
-            {
-                state = stateProperty.GetString();
-            }
-            
-
-            var city = new City { Name = name, Latitude = lat, Longitude = lon, Country = country, State = state};
             return city;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while fetching geocode data for city '{CityName}'.", cityName);
+            _logger.LogError(ex, "An error occurred while fetching geocode data for city '{CityName}'.", cityInput.cityName);
             return null;
         }
     }
 
-    private async Task<string> GetGeocodeDataString(string cityName)
+    private async Task<string> GetGeocodeDataString(GeocodeDTO cityInput)
     {
         try
         {
-            var apiKey = "a302a60c656a3f0ecff3eb4ade4e6c4e";
-            var url = $"http://api.openweathermap.org/geo/1.0/direct?q={cityName.ToLower()}&limit=1&appid={apiKey}";
+            var url = GetUrlFromCityData(cityInput);
+
+            if (string.IsNullOrEmpty(url))
+            {
+                _logger.LogError("Insufficient input data!");
+                return null;
+            }
 
             using var client = new HttpClient();
 
@@ -94,5 +85,23 @@ public class GeocodingCity : IGeocodingCity
             _logger.LogError(ex, "An error occurred while calling the Geocoding API.");
             throw;
         }
+    }
+
+
+    private string GetUrlFromCityData(GeocodeDTO cityInput)
+    {
+        //NEEDS TO BE HIDDEN
+        var apiKey = "a302a60c656a3f0ecff3eb4ade4e6c4e";
+
+        if (cityInput.stateCode == null && cityInput is { countryCode: not null, cityName: not null })
+        {
+            return $"http://api.openweathermap.org/geo/1.0/direct?q={cityInput.cityName.ToLower()},{cityInput.countryCode.ToLower()}&limit=1&appid={apiKey}";
+        }
+        else if (cityInput.stateCode == null && cityInput is { countryCode: not null, cityName: not null })
+        {
+            return $"http://api.openweathermap.org/geo/1.0/direct?q={cityInput.cityName.ToLower()},{cityInput.stateCode.ToLower()},{cityInput.countryCode.ToLower()}&limit=1&appid={apiKey}";
+        }
+
+        return null;
     }
 }
